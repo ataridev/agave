@@ -181,9 +181,21 @@ impl TxLoopBuilder<OwnedUmem<PageAlignedMemory>> {
             umem,
         } = self;
 
+<<<<<<< HEAD
         let Ok((socket, tx)) = Socket::tx(queue, umem, zero_copy, tx_size * 2, tx_size) else {
             panic!("failed to create AF_XDP socket on queue {queue_id:?}");
         };
+=======
+        let queue_id = queue.id();
+        let (socket, tx) =
+            Socket::tx(queue, umem, zero_copy, tx_size * 2, tx_size).map_err(|err| {
+                log::error!(
+                    "failed to create AF_XDP TX socket for queue {queue_id:?} on CPU {cpu_id}: \
+                     {err}"
+                );
+                err
+            })?;
+>>>>>>> c1f0a5a06 (XDP: add os error logging in xdp socket logic (#10563))
 
         let Tx {
             // this is where we'll queue frames
